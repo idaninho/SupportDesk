@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { register, reset } from '../features/auth/authSlice';
+import Spinner from '../components/Spinner';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +16,23 @@ const Register = () => {
 
   const { name, email, password, password2 } = formData;
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user, isLoading, isSuccess, message, isError } = useSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+    //Redirect when logged in
+    if (isSuccess || user) {
+      navigate('/');
+    }
+    dispatch(reset());
+  }, [isError, isSuccess, user, navigate, dispatch, message]);
+  
   const onChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -23,10 +44,18 @@ const Register = () => {
     e.preventDefault();
     if (password !== password2) {
       toast.error('Password do not match');
+    } else {
+      const userData = {
+        name,
+        email,
+        password,
+      };
+      dispatch(register(userData));
     }
   };
   return (
     <>
+      {isLoading && <Spinner />}
       <section className="heading">
         <h1>
           <FaUser /> Register
@@ -63,7 +92,7 @@ const Register = () => {
           </div>
           <div className="form-group">
             <input
-              type="text"
+              type="password"
               className="form-control"
               id="password"
               name="password"
