@@ -25,13 +25,14 @@ function Tickets() {
 
   useEffect(() => {
     if (!user) {
-      navigate('/');
+      navigate('/login');
+    } else {
+      if (isError) {
+        toast.error(message);
+      }
+      dispatch(getTickets());
     }
-    if (isError) {
-      toast.error(message);
-    }
-    dispatch(getTickets());
-  }, [dispatch, user, navigate, isError,message]);
+  }, [dispatch, user, navigate, isError, message]);
   return (
     <div>
       {isLoading && <Spinner />}

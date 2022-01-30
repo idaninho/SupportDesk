@@ -24,15 +24,16 @@ function NewTicket() {
     } else {
       setName(user.name);
       setEmail(user.email);
-    }
-    if (isError) {
-      toast.error(message);
-    }
-    if (isSuccess) {
+
+      if (isError) {
+        toast.error(message);
+      }
+      if (isSuccess) {
+        dispatch(reset());
+        navigate('/tickets');
+      }
       dispatch(reset());
-      navigate('/tickets');
     }
-    dispatch(reset());
   }, [navigate, user, isError, isSuccess, dispatch, message]);
 
   const onSubmit = (e) => {
