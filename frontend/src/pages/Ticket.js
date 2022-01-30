@@ -6,14 +6,23 @@ import { reset, getTicket, closeTicket } from '../features/tickets/ticketSlice';
 import Spinner from '../components/Spinner';
 import { GoBackButton } from '../components/GoBackButton';
 import { useParams } from 'react-router-dom';
+import { getNotes, reset as notesReset } from '../features/notes/noteSlice';
+import { NoteItem } from '../components/NoteItem';
 
 function Ticket() {
   const { user } = useSelector((state) => state.auth);
   const { ticket, isLoading, isSuccess, isError, message } = useSelector(
     (state) => state.ticket
   );
+  const {
+    notes,
+    isLoading: notesIsLoading,
+    isSuccess: notesIsSuccess,
+    isError: notesIsError,
+    message: notesMessage,
+  } = useSelector((state) => state.notes);
+
   const { ticketId } = useParams();
-  console.log(ticketId);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -22,6 +31,7 @@ function Ticket() {
       toast.error(message);
     }
     dispatch(getTicket(ticketId));
+    dispatch(getNotes(ticketId));
   }, [dispatch, isError, ticketId, message]);
 
   const onTicketClose = () => {
@@ -31,7 +41,7 @@ function Ticket() {
   };
   return (
     <div>
-      {isLoading && <Spinner />}
+      {(isLoading || notesIsLoading) && <Spinner />}
       <div className="ticket-page">
         <header className="ticket-header">
           <GoBackButton url="/tickets" />
@@ -51,6 +61,10 @@ function Ticket() {
             <p>{ticket.description}</p>
           </div>
         </header>
+        <h2>Notes</h2>
+        {notes.map((note) => (
+          <NoteItem key={note._id} note={note} />
+        ))}
         {ticket.status !== 'closed' && (
           <button className="btn btn-block btn-danger" onClick={onTicketClose}>
             Close Ticket

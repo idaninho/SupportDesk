@@ -13,14 +13,17 @@ function NewTicket() {
   const { isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.ticket
   );
-  const [name] = useState(user.name);
-  const [email] = useState(user.email);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [product, setProduct] = useState('');
   const [description, setDescription] = useState('');
 
   useEffect(() => {
     if (!user) {
       navigate('/login');
+    } else {
+      setName(user.name);
+      setEmail(user.email);
     }
     if (isError) {
       toast.error(message);
