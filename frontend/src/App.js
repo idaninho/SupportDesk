@@ -7,6 +7,9 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import './App.css';
+import NewTicket from './pages/NewTicket';
+import Tickets from './pages/Tickets';
+import Ticket from './pages/Ticket';
 
 function App() {
   return (
@@ -18,6 +21,9 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/new-ticket" element={<NewTicket />} />
+            <Route path="/tickets" element={<Tickets />} />
+            <Route path="/tickets/:ticketId" element={<Ticket />} />
           </Routes>
         </div>
       </Router>
