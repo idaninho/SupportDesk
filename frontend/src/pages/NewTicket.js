@@ -19,21 +19,20 @@ function NewTicket() {
   const [description, setDescription] = useState('');
 
   useEffect(() => {
-    if (!user) {
-      navigate('/login');
-    } else {
-      setName(user.name);
-      setEmail(user.email);
+    // if (!user) {
+    //   navigate('/login');
+    // } else {
+    setName(user.name);
+    setEmail(user.email);
 
-      if (isError) {
-        toast.error(message);
-      }
-      if (isSuccess) {
-        dispatch(reset());
-        navigate('/tickets');
-      }
-      dispatch(reset());
+    if (isError) {
+      toast.error(message);
     }
+    if (isSuccess) {
+      dispatch(reset());
+      navigate('/tickets');
+    }
+    dispatch(reset());
   }, [navigate, user, isError, isSuccess, dispatch, message]);
 
   const onSubmit = (e) => {
@@ -77,6 +76,7 @@ function NewTicket() {
               value={product}
               onChange={(e) => setProduct(e.target.value)}
             >
+              <option value=""></option>
               <option value="iPhone">iPhone</option>
               <option value="Macbook Pro">Macbook Pro</option>
               <option value="iMac">iMac</option>

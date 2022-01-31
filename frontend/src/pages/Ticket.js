@@ -3,15 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import Modal from 'react-modal';
-import { reset, getTicket, closeTicket } from '../features/tickets/ticketSlice';
+import { getTicket, closeTicket } from '../features/tickets/ticketSlice';
 import Spinner from '../components/Spinner';
 import { GoBackButton } from '../components/GoBackButton';
 import { useParams } from 'react-router-dom';
-import {
-  createNote,
-  getNotes,
-  reset as notesReset,
-} from '../features/notes/noteSlice';
+import { createNote, getNotes } from '../features/notes/noteSlice';
 import { NoteItem } from '../components/NoteItem';
 import { FaPlus } from 'react-icons/fa';
 
@@ -32,13 +28,13 @@ Modal.setAppElement('#root');
 
 function Ticket() {
   const { user } = useSelector((state) => state.auth);
-  const { ticket, isLoading, isSuccess, isError, message } = useSelector(
+  const { ticket, isLoading, isError, message } = useSelector(
     (state) => state.ticket
   );
   const {
     notes,
     isLoading: notesIsLoading,
-    isSuccess: notesIsSuccess,
+
     isError: notesIsError,
     message: notesMessage,
   } = useSelector((state) => state.notes);
@@ -50,14 +46,27 @@ function Ticket() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [noteText, setNoteText] = useState('');
 
-    useEffect(() =>
-    {
-    if (isError) {
-      toast.error(message);
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    } else {
+      if (isError || notesIsError) {
+        toast.error(message);
+        toast.error(notesMessage);
+      }
+      dispatch(getTicket(ticketId));
+      dispatch(getNotes(ticketId));
     }
-    dispatch(getTicket(ticketId));
-    dispatch(getNotes(ticketId));
-  }, [dispatch, isError, ticketId, message]);
+  }, [
+    dispatch,
+    navigate,
+    notesIsError,
+    notesMessage,
+    user,
+    isError,
+    ticketId,
+    message,
+  ]);
 
   const onTicketClose = () => {
     dispatch(closeTicket(ticketId));
@@ -67,12 +76,10 @@ function Ticket() {
 
   const openModal = () => {
     setModalIsOpen(!modalIsOpen);
-    console.log(modalIsOpen);
   };
 
   const onNoteSumbit = (e) => {
     e.preventDefault();
-    console.log(e);
     dispatch(createNote({ noteText, ticketId }));
     openModal();
   };
