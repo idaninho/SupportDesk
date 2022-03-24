@@ -4,7 +4,6 @@ const morgan = require('morgan');
 const { errorHandler } = require('./middleware/errorMiddleware');
 const connectDB = require('./config/db');
 const PORT = process.env.PORT || 8000;
-
 //Connect to DB
 connectDB();
 
